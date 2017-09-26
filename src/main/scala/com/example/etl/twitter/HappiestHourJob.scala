@@ -18,28 +18,33 @@ object HappiestHourJob extends LazyLogging {
       .setMaster(sparkMaster)
       .setAppName(this.getClass.toString)
 
-    implicit val spark = SparkSession.builder.config(sparkConf).getOrCreate()
-
     val params = Args(args)
 
     // period to analyse is [from, to) for provided timestamps (in millis)
     val from = DateTime.parse(params.required("from")).getMillis
     val to = DateTime.parse(params.required("to")).getMillis
 
-    val tweets = tweetsFromPath(from, to)
-//    tweets.show
+    implicit val spark = SparkSession.builder.config(sparkConf).getOrCreate()
+    try {
 
-    val happiestHour = findHappiestHour(tweets)
-    logger.info(s"Happiest Hour is $happiestHour")
+      val tweets = tweetsFromPath(from, to)
+  //    tweets.show
 
-    val hashtags = findHashTags(tweets.where(col("hour") === lit(happiestHour)))
-//    hashtags.show
+      val happiestHour = findHappiestHour(tweets)
+      logger.info(s"Happiest Hour is $happiestHour")
 
-    val combinations = hashTagsCombinations(hashtags)
-//    combinations.show
+      val hashtags = findHashTags(tweets.where(col("hour") === lit(happiestHour)))
+  //    hashtags.show
 
-    val mostPopularCombination = mostPopularHashTags(combinations)
-    println(s"[${happiestHourTimestamp(from, happiestHour)}] ${mostPopularCombination.mkString(", ")}")
+      val combinations = hashTagsCombinations(hashtags)
+  //    combinations.show
+
+      val mostPopularCombination = mostPopularHashTags(combinations)
+      println(s"[${happiestHourTimestamp(from, happiestHour)}] ${mostPopularCombination.mkString(", ")}")
+    }
+    finally {
+      spark.close()
+    }
   }
 
   private def arrayLongerThan(len: Int) = udf((arr: Seq[String]) => arr.length >= len)

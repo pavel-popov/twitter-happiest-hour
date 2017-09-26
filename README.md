@@ -42,6 +42,12 @@ Run:
         --from 2017-09-25T14:00Z \
         --to 2017-09-25T16:00Z
 
+    sbt \
+        -Dconfig.file=src/main/resources/application.conf \
+        "run-main com.example.etl.twitter.HappiestHourJob \
+        --from 2017-09-25T14:00Z \
+        --to 2017-09-25T16:00Z"
+
 ## TODO
 
 - Fix transitive dependencies conflicting versions (json4s, jackson, netty, etc.)
