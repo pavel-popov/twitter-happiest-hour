@@ -8,8 +8,8 @@ class HappyTweetTest extends FlatSpec with Matchers {
   "HappyTweet timestamp" should "be truncated to an hour" in {
     val tweet = HappyTweet(
       id = 0L,
-      text = "test",
-      hashtags = Seq(),
+//      text = "test",
+      hashtags = None,
       timestamp = DateTime.parse("2017-09-25T20:59Z").getMillis
     )
 

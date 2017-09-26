@@ -41,7 +41,11 @@ class HappiestHourJobTest extends FlatSpec with Matchers {
   }
 
   val ts: Long = DateTime.parse("2017-09-25T00:00Z").getMillis
-  val tweet = HappyTweet(0L, "test", Seq(), ts)
+  val tweet = HappyTweet(
+    id = 0L,
+//    text = "test",
+    hashtags = None,
+    timestamp = ts)
 
   "findHappiestHour" should "work" in {
     val tweets = Seq(tweet,
@@ -64,9 +68,9 @@ class HappiestHourJobTest extends FlatSpec with Matchers {
     import sampleHashtags._
 
     val tweets = Seq(tweet,
-      tweet.copy(hashtags = Seq(David, Bowie)),
-      tweet.copy(hashtags = Seq(David, Bowie, Madonna)),
-      tweet.copy(hashtags = Seq(Madonna))
+      tweet.copy(hashtags = Some(Seq(David, Bowie))),
+      tweet.copy(hashtags = Some(Seq(David, Bowie, Madonna))),
+      tweet.copy(hashtags = Some(Seq(Madonna)))
     )
 
     val expected = Seq(
@@ -101,6 +105,4 @@ class HappiestHourJobTest extends FlatSpec with Matchers {
 
     hashTagsCombinations(df.as[HashTags]).collect() should contain theSameElementsAs expected
   }
-
-
 }

@@ -116,6 +116,7 @@ object HappiestHourJob extends LazyLogging {
 
     tweets
       .select(hashtags)
+      .where(hashtags.isNotNull)
       .withColumn("hashtags", distinct(hashtags))
       .where(arrayLimit(hashtags))
       .as[HashTags]
