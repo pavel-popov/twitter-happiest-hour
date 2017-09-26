@@ -5,6 +5,13 @@ happiest hour of the day is the one containing the most of ":)" in tweets.
 
 Note: All time-specific calculations are performed in UTC TimeZone.
 
+
+## Prerequisites
+
+Download Spark 2.2.0 from https://spark.apache.org/downloads.html (Pre-build for
+Hadoop 2.6) - spark-2.2.0-bin-hadoop2.6.tgz, untar, create env variable
+`SPARK_HOME` pointing to the location.
+
 ## Configuration
 
 Configuration to be placed in the `src/main/resources/application.conf` file and should contain valid Twitter API Keys.
@@ -35,18 +42,18 @@ One can find happiest hour during arbitrary time period `[from, to)`.
 
 Run:
 
+    sbt \
+        -Dconfig.file=src/main/resources/application.conf \
+        "runMain com.example.etl.twitter.HappiestHourJob \
+        --from 2017-09-25T14:00Z \
+        --to 2017-09-25T16:00Z"
+
     java \
-        -cp target/scala-2.11/twitter-happiest-hour-assembly-1.0.jar \
+        -classpath "target/scala-2.11/twitter-happiest-hour-assembly-1.0.jar:$SPARK_HOME/jars/*" \
         -Dconfig.file=src/main/resources/application.conf \
         com.example.etl.twitter.HappiestHourJob \
         --from 2017-09-25T14:00Z \
         --to 2017-09-25T16:00Z
-
-    sbt \
-        -Dconfig.file=src/main/resources/application.conf \
-        "run-main com.example.etl.twitter.HappiestHourJob \
-        --from 2017-09-25T14:00Z \
-        --to 2017-09-25T16:00Z"
 
 ## TODO
 
