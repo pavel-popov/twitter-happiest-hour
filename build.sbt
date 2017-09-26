@@ -19,21 +19,20 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-native" % "3.5.3"
 ) ++ testDependencies.map(_ % "test")
 
-assemblyMergeStrategy in assembly := {
-  case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last
-  case PathList("javax", "activation", xs @ _*) => MergeStrategy.last
-  case PathList("org", "apache", xs @ _*) => MergeStrategy.last
-  case PathList("com", "google", xs @ _*) => MergeStrategy.last
-  case PathList("com", "esotericsoftware", xs @ _*) => MergeStrategy.last
-  case PathList("com", "codahale", xs @ _*) => MergeStrategy.last
-  case PathList("com", "yammer", xs @ _*) => MergeStrategy.last
-  case "about.html" => MergeStrategy.rename
-  case "META-INF/ECLIPSEF.RSA" => MergeStrategy.last
-  case "META-INF/mailcap" => MergeStrategy.last
-  case "META-INF/mimetypes.default" => MergeStrategy.last
-  case "plugin.properties" => MergeStrategy.last
-  case "log4j.properties" => MergeStrategy.last
-  case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
-    oldStrategy(x)
+import sbtassembly.MergeStrategy
+
+val reverseConcat: MergeStrategy = new MergeStrategy {
+  val name = "reverseConcat"
+  def apply(tempDir: File, path: String, files: Seq[File]): Either[String, Seq[(File, String)]] =
+    MergeStrategy.concat(tempDir, path, files.reverse)
 }
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "services", "org.apache.hadoop.fs.FileSystem") => MergeStrategy.filterDistinctLines
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case PathList("application.conf") => MergeStrategy.discard
+  case "BUILD" => MergeStrategy.discard
+  case fileName if fileName.toLowerCase == "reference.conf" => reverseConcat
+  case x => MergeStrategy.last
+}
+

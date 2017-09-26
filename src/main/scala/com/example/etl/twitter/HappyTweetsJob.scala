@@ -23,7 +23,7 @@ object HappyTweetsJob extends LazyLogging {
   implicit val formats = DefaultFormats
 
   def main(args: Array[String]): Unit = {
-    logger.info("App is starting")
+    println("App is starting")
 
     val client = TwitterStreamingClient()
 
@@ -48,13 +48,13 @@ object HappyTweetsJob extends LazyLogging {
     */
   private def save(tweet: Tweet) = {
     if (tweets.length > batchSize) {
-      logger.info("Saving tweets")
+      println("Saving tweets")
       val happyTweets: Seq[HappyTweet] = tweets.map(HappyTweet(_))
       dump(happyTweets)
 
       tweets.clear()
     } else {
-      logger.info(s"Tweet found: ${tweet.text}")
+      println(s"Tweet found: ${tweet.text}")
       tweets += tweet
     }
   }

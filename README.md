@@ -24,8 +24,10 @@ Each json file is named as `tweets-<first-tweet-id>.json`.
 
 Run:
 
-    java -cp target/scala-2.11/twitter-happiest-hour_2.11-1.0.jar com.example.etl.twitter.HappyTweetsJob
-
+    java \
+        -cp target/scala-2.11/twitter-happiest-hour-assembly-1.0.jar \
+        -Dconfig.file=src/main/resources/application.conf \
+        com.example.etl.twitter.HappyTweetsJob
 
 ## Second part
 
@@ -33,11 +35,12 @@ One can find happiest hour during arbitrary time period `[from, to)`.
 
 Run:
 
-    java -cp target/scala-2.11/twitter-happiest-hour_2.11-1.0.jar \
+    java \
+        -cp target/scala-2.11/twitter-happiest-hour-assembly-1.0.jar \
+        -Dconfig.file=src/main/resources/application.conf \
         com.example.etl.twitter.HappiestHourJob \
         --from 2017-09-25T14:00Z \
         --to 2017-09-25T16:00Z
-
 
 ## TODO
 
